@@ -3,6 +3,8 @@ package dev.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CarTest {
@@ -49,12 +51,41 @@ class CarTest {
 
     @Test
     void getListOfOwners() {
-        assertArrayEquals(new String[] {"Dmitry F."}, car.getOwners().toArray());
+        assertArrayEquals(new String[]{"Dmitry F."}, car.getOwners().toArray());
     }
 
     @Test
     void getListOfTwoOwners() {
         car.setOwner("Andrey K.");
-        assertArrayEquals(new String[] {"Dmitry F.", "Andrey K."}, car.getOwners().toArray());
+        assertArrayEquals(new String[]{"Dmitry F.", "Andrey K."}, car.getOwners().toArray());
     }
+
+    @Test
+    public void testPrivateMethod() {
+
+        try {
+            Method method = Car.class.getDeclaredMethod("testMethod", null);
+
+            method.setAccessible(true);
+            assertEquals(method.invoke(car).toString(), "abc");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testPrivateMethodWithArgument() {
+
+        try {
+            Method method = Car.class.getDeclaredMethod("testMethod", String.class);
+
+            method.setAccessible(true);
+            assertEquals(method.invoke(car, "abd").toString(), "abd");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
