@@ -1,7 +1,13 @@
-package dev.UnitTest;
+package dev.UnitTest2;
 
+import dev.UnitTest2.Car;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 
 import java.lang.reflect.Method;
 
@@ -14,7 +20,7 @@ class CarTest {
 
     @BeforeEach
     public void createCar() {
-        car = new Car("Skoda", "ABC-1234", 2019, "Dmitry F.");
+        car = new dev.UnitTest2.Car("Skoda", "ABC-1234", 2019, "Dmitry F.");
     }
 
     @Test
@@ -31,6 +37,19 @@ class CarTest {
     void setNumber() {
         car.setNumber("ABCD-1234");
         assertEquals("ABCD-1234", car.getNumber());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"'ABCD-123', 'ABCD-123'", "'DEF-456', 'DEF-456'"})
+    void testSetNumberMultipleValues(String number, String x) {
+        car.setNumber(number);
+        assertEquals(x, car.getNumber());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1, 5", "8, 12", "32, 36"})
+    void testInt(int input, int output) {
+        assertEquals(car.testInt(input), output);
     }
 
     @Test
@@ -64,7 +83,7 @@ class CarTest {
     public void testPrivateMethod() {
 
         try {
-            Method method = Car.class.getDeclaredMethod("testMethod", null);
+            Method method = dev.UnitTest2.Car.class.getDeclaredMethod("testMethod", null);
 
             method.setAccessible(true);
             assertEquals(method.invoke(car).toString(), "abc");
@@ -86,6 +105,24 @@ class CarTest {
             e.printStackTrace();
         }
 
+    }
+
+    @ParameterizedTest
+    @EnabledOnOs({OS.LINUX, OS.MAC})
+    @EnabledOnJre(JRE.JAVA_11)
+    //@DisabledOnJre(JRE.JAVA_8)
+    @DisplayName("Test demonstrates how test data could be loaded from file")
+    @CsvFileSource(resources = "/dev/UnitTest2/test-data.csv", delimiter = '|', numLinesToSkip = 1)
+    public void testNumbers(String input, String expected) {
+        car.setNumber(input);
+        assertEquals(expected, car.getNumber());
+    }
+
+    @Test
+    void getTestData() {
+        assertThrows(Exception.class, () -> {
+            car.getDataFromRemoteServer();
+        });
     }
 
 }

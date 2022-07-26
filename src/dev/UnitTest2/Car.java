@@ -1,7 +1,6 @@
-package dev.UnitTest;
+package dev.UnitTest2;
 
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public class Car {
 
@@ -56,5 +55,13 @@ public class Car {
 
     private String testMethod(String a) {
         return a;
+    }
+
+    public int testInt(int a) {
+        return a + 4;
+    }
+
+    public String getDataFromRemoteServer() throws Exception {
+        throw new Exception("error!!!");
     }
 }
